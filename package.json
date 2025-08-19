@@ -11,7 +11,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node Day4-RAG/server-simple.js"
+    "start": "node Day4-RAG/server-simple.js",
+    "build": "echo 'No build step required'",
+    "dev": "node Day4-RAG/server-simple.js"
   },
   "dependencies": {
     "@google/genai": "^1.14.0",

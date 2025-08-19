@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "Day4-RAG/server-simple.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "Day4-RAG/server-simple.js"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
