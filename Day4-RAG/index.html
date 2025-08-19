@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 RAG Application</h1>
+            <p>Retrieval Augmented Generation for your documents</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Data Input Section -->
+            <div class="section" id="data-section">
+                <h2>📄 Data Sources</h2>
+                
+                <!-- Text Input -->
+                <div class="input-group">
+                    <h3>Text Input</h3>
+                    <textarea id="textInput" placeholder="Enter your text content here..." rows="6"></textarea>
+                    <button id="addTextBtn" class="btn btn-primary">Add Text to RAG Store</button>
+                </div>
+
+                <!-- File Upload -->
+                <div class="input-group">
+                    <h3>File Upload</h3>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <input type="file" id="fileInput" accept=".pdf,.csv,.txt" multiple>
+                        <div class="upload-text">
+                            <p>📁 Drop files here or click to browse</p>
+                            <small>Supported: PDF, CSV, TXT</small>
+                        </div>
+                    </div>
+                    <div class="selected-files" id="selectedFiles"></div>
+                    <button id="uploadFilesBtn" class="btn btn-primary">Upload Files to RAG Store</button>
+                </div>
+
+                <!-- Website URL -->
+                <div class="input-group">
+                    <h3>Website URL</h3>
+                    <input type="url" id="urlInput" placeholder="https://example.com">
+                    <button id="addUrlBtn" class="btn btn-primary">Add Website to RAG Store</button>
+                </div>
+            </div>
+
+            <!-- RAG Store Status -->
+            <div class="section" id="store-section">
+                <h2>🗄️ RAG Store</h2>
+                <div class="store-status">
+                    <div class="status-item">
+                        <span class="label">Documents:</span>
+                        <span id="docCount">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Chunks:</span>
+                        <span id="chunkCount">0</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Status:</span>
+                        <span id="storeStatus" class="status-ready">Ready</span>
+                    </div>
+                </div>
+                <button id="clearStoreBtn" class="btn btn-danger">Clear Store</button>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="section" id="chat-section">
+                <h2>💬 Chat with Your Data</h2>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                <p>Hello! I'm ready to answer questions about your uploaded documents. Please add some data to the RAG store first, then ask me anything!</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chatInput" placeholder="Ask a question about your documents...">
+                        <button id="sendBtn" class="btn btn-primary">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <p>Processing...</p>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
