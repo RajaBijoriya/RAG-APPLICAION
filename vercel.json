@@ -8,6 +8,10 @@
   ],
   "routes": [
     {
+      "src": "/Day4-RAG/(.*\\.(css|js|html|png|jpg|jpeg|gif|ico|svg))",
+      "dest": "/Day4-RAG/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "Day4-RAG/server-simple.js"
     }
