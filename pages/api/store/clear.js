@@ -1,6 +1,6 @@
 const qdrantConfig = {
   url: process.env.QDRANT_URL || "http://localhost:6333",
-  collectionName: "chaicode-collection",
+  collectionName: "chaicode_collection",
 }
 
 export default async function handler(req, res) {

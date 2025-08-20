@@ -1,0 +1,14 @@
+FROM qdrant/qdrant:latest
+
+# Expose the default Qdrant port
+EXPOSE 6333
+
+# Set environment variables
+ENV QDRANT__SERVICE__HTTP_PORT=6333
+ENV QDRANT__SERVICE__GRPC_PORT=6334
+
+# Create data directory
+RUN mkdir -p /qdrant/storage
+
+# Start Qdrant
+CMD ["./qdrant"]

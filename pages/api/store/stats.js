@@ -9,7 +9,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
 
 const qdrantConfig = {
   url: process.env.QDRANT_URL || "http://localhost:6333",
-  collectionName: "chaicode-collection",
+  collectionName: "chaicode_collection",
 }
 
 // Function to get or create a vector store
