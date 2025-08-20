@@ -1,16 +1,14 @@
 {
   "name": "genai-js-1",
   "version": "1.0.0",
-  "description": "",
+  "description": "RAG Application built with Next.js",
   "license": "ISC",
   "author": "",
-  "type": "module",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node Day4-RAG/server-simple.js",
-    "build": "echo 'No build step required'",
-    "dev": "node Day4-RAG/server-simple.js"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@google/genai": "^1.14.0",
@@ -22,14 +20,23 @@
     "@langchain/textsplitters": "^0.1.0",
     "axios": "^1.11.0",
     "cheerio": "^1.1.2",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^5.1.0",
     "langchain": "^0.3.31",
     "multer": "^2.0.2",
+    "next": "^14.0.0",
     "openai": "^5.12.2",
     "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.4.54"
+    "pdfjs-dist": "^5.4.54",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.0.0"
   },
   "overrides": {
     "punycode": "^2.3.0",
