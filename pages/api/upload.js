@@ -3,8 +3,13 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai"
 import { QdrantVectorStore } from "@langchain/qdrant"
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters"
 
-// Configure multer for memory storage
-const upload = multer({ storage: multer.memoryStorage() })
+// Configure multer for memory storage with size limits
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  }
+})
 
 // Middleware to handle multipart/form-data
 function runMiddleware(req, res, fn) {
@@ -124,15 +129,29 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Add timeout handling for Vercel
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(408).json({ error: 'Request timeout. Please try with a smaller file.' })
+      }
+    }, 55000) // 55 seconds timeout
+
     // Run multer middleware
     await runMiddleware(req, res, upload.single('file'))
 
     if (!req.file) {
+      clearTimeout(timeout)
       return res.status(400).json({ error: 'No file uploaded.' })
     }
 
     const { buffer, mimetype, originalname } = req.file
     console.log(`Received file: ${originalname}, type: ${mimetype}`)
+
+    // Check file size for Vercel limits
+    if (buffer.length > 10 * 1024 * 1024) {
+      clearTimeout(timeout)
+      return res.status(400).json({ error: 'File too large. Maximum size is 10MB.' })
+    }
 
     let docs
 
@@ -141,6 +160,7 @@ export default async function handler(req, res) {
     } else if (mimetype === 'text/plain' || mimetype === 'text/csv') {
       docs = processTextFile(buffer, originalname)
     } else {
+      clearTimeout(timeout)
       return res.status(400).json({ error: `Unsupported file type: ${mimetype}` })
     }
 
@@ -157,18 +177,26 @@ export default async function handler(req, res) {
     
     console.log(`Added ${splits.length} chunks to vector store`)
 
+    clearTimeout(timeout)
     res.json({ 
       message: `File '${originalname}' uploaded and processed successfully.`,
       chunks: splits.length
     })
   } catch (error) {
     console.error('Error processing file:', error)
-    res.status(500).json({ error: 'Failed to process file.' })
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Failed to process file.',
+        details: error.message 
+      })
+    }
   }
 }
 
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: '10mb',
   },
+  maxDuration: 60,
 }

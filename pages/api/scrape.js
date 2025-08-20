@@ -70,11 +70,19 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Add timeout for Vercel
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(408).json({ error: 'Request timeout. Please try again.' })
+      }
+    }, 25000)
+
     console.log(`Scraping URL: ${url}`)
     
     const docs = await scrapeWebsite(url)
     
     if (docs.length === 0) {
+      clearTimeout(timeout)
       return res.status(400).json({ error: 'No content found at the provided URL.' })
     }
 
@@ -93,14 +101,22 @@ export default async function handler(req, res) {
     
     console.log(`Added ${splits.length} chunks from website to vector store`)
 
+    clearTimeout(timeout)
     res.json({ 
       message: `Website content from '${url}' scraped and indexed successfully.`,
       chunks: splits.length
     })
   } catch (error) {
     console.error('Error scraping website:', error)
-    res.status(500).json({ 
-      error: `Failed to scrape website: ${error.message}` 
-    })
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: `Failed to scrape website: ${error.message}`,
+        details: error.message 
+      })
+    }
   }
+}
+
+export const config = {
+  maxDuration: 30,
 }

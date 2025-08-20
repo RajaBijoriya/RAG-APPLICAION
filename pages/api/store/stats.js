@@ -43,6 +43,13 @@ export default async function handler(req, res) {
     })
   } catch (error) {
     console.error('Error getting store stats:', error)
-    res.status(500).json({ error: 'Failed to get store statistics.' })
+    res.status(500).json({ 
+      error: 'Failed to get store statistics.',
+      details: error.message 
+    })
   }
+}
+
+export const config = {
+  maxDuration: 10,
 }

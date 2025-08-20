@@ -42,6 +42,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Add timeout for Vercel
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(408).json({ error: 'Request timeout. Please try again.' })
+      }
+    }, 25000)
+
     console.log('Processing direct text input')
     
     // Create a document from the text
@@ -69,12 +76,22 @@ export default async function handler(req, res) {
     
     console.log(`Added ${splits.length} chunks from text input to vector store`)
 
+    clearTimeout(timeout)
     res.json({ 
       message: 'Text content added to RAG store successfully.',
       chunks: splits.length
     })
   } catch (error) {
     console.error('Error processing text:', error)
-    res.status(500).json({ error: 'Failed to process text input.' })
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Failed to process text input.',
+        details: error.message 
+      })
+    }
   }
+}
+
+export const config = {
+  maxDuration: 30,
 }

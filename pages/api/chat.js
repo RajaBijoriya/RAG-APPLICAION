@@ -42,6 +42,13 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Add timeout for Vercel
+    const timeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(408).json({ error: 'Request timeout. Please try again.' })
+      }
+    }, 25000)
+
     const vectorStore = await getVectorStore()
     const retriever = vectorStore.asRetriever({ k: 5 })
     const relevantDocs = await retriever.invoke(message)
@@ -49,6 +56,7 @@ export default async function handler(req, res) {
     console.log(`Found ${relevantDocs.length} relevant documents for query: "${message}"`)
     
     if (relevantDocs.length === 0) {
+      clearTimeout(timeout)
       return res.json({ 
         reply: "I don't have any relevant information to answer your question. Please make sure you've uploaded documents to the RAG store first." 
       })
@@ -80,9 +88,19 @@ ${context}
     const result = await chatModel.generateContent(prompt)
     const reply = result.response.text()
 
+    clearTimeout(timeout)
     res.json({ reply })
   } catch (error) {
     console.error('Error handling chat message:', error)
-    res.status(500).json({ error: 'Failed to get a chat reply.' })
+    if (!res.headersSent) {
+      res.status(500).json({ 
+        error: 'Failed to get a chat reply.',
+        details: error.message 
+      })
+    }
   }
+}
+
+export const config = {
+  maxDuration: 30,
 }
